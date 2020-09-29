@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  schedulerdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "P455_w0rD"
+    ports:
+      - "14333:1433"
+  schedulerapi:
+    image: ${DOCKER_REGISTRY-}schedulerapi
+    build:
+      context: .
+      dockerfile: SchedulerAPI/Dockerfile
+    depends_on:
+      - schedulerdb
+    environment:
+      WAIT_HOSTS: schedulerdb:14333
